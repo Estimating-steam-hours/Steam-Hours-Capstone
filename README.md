@@ -19,13 +19,13 @@ We believe that Multiplayer games with a competitive element, such as battle roy
 * Prepare the data
 * Explore the data
     * Answer the following questions
-        *
-        *
-        *
+        * 
+        * 
+        * 
 * Develop a Model to predict hours played
-    *
-    *
-    *
+    * 
+    * 
+    * 
 * Draw Conclusions
 
 ## Data Dictionary
@@ -33,7 +33,15 @@ We believe that Multiplayer games with a competitive element, such as battle roy
 | Feature | Definition |
 |:--------|:-----------|
 |name| The title of the game|
-
+|developer| The name of the company that developed the game|
+|publisher| The name of the compnay that published the game|
+|positive| Number of positive reviews|
+|negative| Number of negative reviews|
+|average_forever| Average hours played since game was published|
+|average_2weeks| Average hours played in past two weeks|
+|median_forever| The median hours played since game was published|
+|median_2weeks| The median hours played in past two weeks|
+|ccu| The number of concurrent users|
 
 ## Steps to Reproduce
 1) Clone this repo
