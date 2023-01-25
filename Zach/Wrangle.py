@@ -34,7 +34,7 @@ def clean_steamspy(df):
 #Turning minutes to hours
     df.iloc[:,[9,10,11,12]] = (df.iloc[:,[9,10,11,12]] / 120)
 #Drops
-    df = df.drop(columns = ['score_rank','userscore','price','initialprice','discount','owners'])
+    df = df.drop(columns = ['score_rank','userscore','owners'])
     return df
 
 def scale_numeric(df):
