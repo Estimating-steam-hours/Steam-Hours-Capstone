@@ -2,6 +2,8 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler
 import numpy as np
+import os
+import requests
 
 #Creating list of top 10 publishers from https://learn.g2.com/video-game-publishers
 
