@@ -60,6 +60,13 @@ def discount_visual(train):
     plt.title('Discount vs. Average hours')
     plt.show
     
+# VIZ 4 statistics test
+def get_chi_discount(train):
+    observed = pd.crosstab(train.average_forever, train.discount)
+    chi2, p, degf, expected = stats.chi2_contingency(observed)
+    print(f'chi^2 = {chi2:.4f}')
+    print(f'p     = {p:.4f}')
+    
 # VIZ 5
 def MMO_visual(train):
     sns.barplot(data=train, y='average_forever', x='Genre_Massively Multiplayer')
