@@ -117,6 +117,8 @@ def get_steamspy_all():
         
         # If csv file exists read in data from csv file.
         df = pd.read_csv('steamspy_3000_games.csv', index_col=0)
+
+        app_list = list(df.appid)
         
     else:
         #Begin pulling data from steamspy
@@ -137,9 +139,11 @@ def get_steamspy_all():
 
         df.to_csv('steamspy_3000_games.csv')
 
-    return df
+        app_list = list(df.appid)
 
-def get_tags_genre():
+    return df, app_list
+
+def get_tags_genre(app_list):
     '''
     This function checks if device has required csv to run project. 
     If not, requests data from steamspy to create csv.
@@ -150,6 +154,7 @@ def get_tags_genre():
         df = pd.read_csv('tags_genre_3000.csv', index_col=0)
         
     else:
+        app_list = app_list
         tag_list = []
         genre_list = []
         
@@ -201,8 +206,8 @@ def get_clean_steamspy_data():
     This function runs all acquire and prep function.
     Ready for train,test splitting.
     '''
-    steamspy_data = get_steamspy_all()
-    tags_genre = get_tags_genre()
+    steamspy_data, app_list = get_steamspy_all()
+    tags_genre = get_tags_genre(app_list)
     df = get_appended_steamspy_data(steamspy_data, tags_genre)
     
     df = clean_steamspy(df)
