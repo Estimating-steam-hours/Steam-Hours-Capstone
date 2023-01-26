@@ -1,10 +1,7 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler
-scaler = MinMaxScaler()
 import numpy as np
-import os
-import requests
 
 #Creating list of top 10 publishers from https://learn.g2.com/video-game-publishers
 
@@ -16,26 +13,23 @@ III = ['Curve Digital','Ukuza','Team 17','Devolver Digital','Indie Fund','Midnig
 
 
 def clean_steamspy(df):
-    '''
-    This function cleans the appended csv of data pulled from steamspy.
-    Continuous variables are binned to be used in classification modeling.
-    Several publishers, developers, and genres are encoded into their own
-    features for classification modeling.
-    '''
     #Turning minutes to hours
     df.iloc[:,[9,10,11,12]] = (df.iloc[:,[9,10,11,12]] / 60)
     #BINS FOR TARGET
     ninety = np.quantile(df['average_forever'], 0.90)
     ten = np.quantile(df['average_forever'], 0.10)
     IQR = ninety - ten
-    target_bins = [0,1.565,75.253,195.97,1000]
-    target_labels = ['rarely_played','moderately_played','heavily_played','most_played']
+    target_bins_explore = [0,1.565,75.253,195.97,1000]
+    target_labels_explore = ['rarely_played','moderately_played','heavily_played','most_played']
+    df['binned_hours_explore'] = pd.cut(df['average_forever'], bins = target_bins_explore, labels = target_labels_explore)
+    target_bins = [0,1.565,75.253,1000]
+    target_labels = ['rarely_played', 'moderately_played', 'heavily_played']
     df['binned_hours'] = pd.cut(df['average_forever'], bins = target_bins, labels = target_labels)
 
 
 
     #BINS FOR RELEASE PRICE
-    price_bins = [0,200,400,10000]
+    price_bins = [0,2000,4000,100000]
     price_labels = ['free_to_play','budget_games','full_price_games']
     df['binned_release_price'] = pd.cut(df['initialprice'], bins = price_bins, labels = price_labels)
 
@@ -109,10 +103,6 @@ def clean_steamspy(df):
 #Drops
     df = df.drop(columns = ['score_rank','userscore'])
     df = df.dropna()
-
-    #Encoding release price bins
-    for x in df.binned_release_price.unique():
-        df[f'Price: {x}'] = df.binned_release_price.str.contains(x)
 
 
     return df
