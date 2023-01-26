@@ -3,8 +3,6 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler
 scaler = MinMaxScaler()
 import numpy as np
-import os
-import requests
 
 #Creating list of top 10 publishers from https://learn.g2.com/video-game-publishers
 
@@ -18,13 +16,22 @@ III = ['Curve Digital','Ukuza','Team 17','Devolver Digital','Indie Fund','Midnig
 def clean_steamspy(df):
     #Turning minutes to hours
     df.iloc[:,[9,10,11,12]] = (df.iloc[:,[9,10,11,12]] / 60)
-    # binned target
+    #BINS FOR TARGET
     ninety = np.quantile(df['average_forever'], 0.90)
     ten = np.quantile(df['average_forever'], 0.10)
     IQR = ninety - ten
-    bins = [0,1.565,75.253,195.97,1000]
-    labels = ['rarely_played','moderately_played','heavily_played','most_played']
-    df['binned_hours'] = pd.cut(df['average_forever'], bins=bins, labels=labels)
+    target_bins = [0,1.565,75.253,195.97,1000]
+    target_labels = ['rarely_played','moderately_played','heavily_played','most_played']
+    df['binned_hours'] = pd.cut(df['average_forever'], bins = target_bins, labels = target_labels)
+
+
+
+    #BINS FOR RELEASE PRICE
+    price_bins = [0,200,400,10000]
+    price_labels = ['free_to_play','budget_games','full_price_games']
+    df['binned_release_price'] = pd.cut(df['initialprice'], bins = price_bins, labels = price_labels)
+
+
     #formatting pub and dev strings
     df.publisher = df.publisher.str.replace(' ', '_')
     df.developer = df.developer.str.replace(' ','_')
@@ -94,12 +101,17 @@ def clean_steamspy(df):
 #Drops
     df = df.drop(columns = ['score_rank','userscore'])
     df = df.dropna()
+
+    #Encoding release price bins
+    for x in df.binned_release_price.unique():
+        df[f'Price: {x}'] = df.binned_release_price.str.contains(x)
+
+
     return df
 
 def scale_numeric(df):
     df.iloc[:,[6,7,8,9,10]] = scaler.fit_transform(df.iloc[:,[6,7,8,9,10]])
     return df
-    
 def my_train_test_split(df):
 
     train, test = train_test_split(df, test_size=.2, random_state=123)
@@ -107,19 +119,18 @@ def my_train_test_split(df):
 
     return train, validate, test
 
-
 def get_steamspy_all():
     '''
-    This function checks if device has required csv to run project. 
+    This function checks if device has required csv to run project.
     If not, requests data from steamspy to create csv.
     '''
     if os.path.isfile('steamspy_3000_games.csv'):
-        
+
         # If csv file exists read in data from csv file.
         df = pd.read_csv('steamspy_3000_games.csv', index_col=0)
 
         app_list = list(df.appid)
-        
+
     else:
         #Begin pulling data from steamspy
         long_response1 = requests.get('https://steamspy.com/api.php?request=all&page=0')
@@ -145,19 +156,19 @@ def get_steamspy_all():
 
 def get_tags_genre(app_list):
     '''
-    This function checks if device has required csv to run project. 
+    This function checks if device has required csv to run project.
     If not, requests data from steamspy to create csv.
     '''
     if os.path.isfile('tags_genre_3000.csv'):
-        
+
         # If csv file exists read in data from csv file.
         df = pd.read_csv('tags_genre_3000.csv', index_col=0)
-        
+
     else:
         app_list = app_list
         tag_list = []
         genre_list = []
-        
+
         for i in app_list:
             response = requests.get(f'https://steamspy.com/api.php?request=appdetails&appid={i}')
             response_data = response.json()
@@ -167,31 +178,31 @@ def get_tags_genre(app_list):
             else:
                 tag_list.append([])
                 genre_list.append(response_data['genre'])
-            
+
         tag_series = pd.Series(tag_list, name='tags')
         genre_series = pd.Series(genre_list, name='genre')
         app_series = pd.Series(app_list, name='appid')
-        
+
         df = pd.DataFrame(app_series)
         df['tags'] = tag_series
         df['genre'] = genre_series
-        
+
         df.to_csv('tags_genre_3000.csv')
-        
+
     return df
 
-def get_appended_steamspy_data(steamspy_data, tags_genre):  
+def get_appended_steamspy_data(steamspy_data, tags_genre):
     '''
-    This function checks if device has required csv to run project. 
+    This function checks if device has required csv to run project.
     If not, requests data to create csv.
     '''
     if os.path.isfile('final_steamspy_3000_games.csv'):
-        
+
         # If csv file exists read in data from csv file.
         df = pd.read_csv('final_steamspy_3000_games.csv', index_col=0)
-        
+
     else:
-    
+
         df = steamspy_data.reset_index()
         df = steamspy_data.drop(columns='index')
 
@@ -209,7 +220,7 @@ def get_clean_steamspy_data():
     steamspy_data, app_list = get_steamspy_all()
     tags_genre = get_tags_genre(app_list)
     df = get_appended_steamspy_data(steamspy_data, tags_genre)
-    
+
     df = clean_steamspy(df)
-    
+
     return df
