@@ -43,7 +43,7 @@ def clean_steamspy(df):
 #PUBLISHER ENCODING:
     Publisher_list = ['']
     word = ''
-    for x in df.publisher[(df.binned_hours == 'most_played') & (df.owners != '0 .. 20,000') & (df.owners != '20,000 .. 50,000') & (df.owners != '50,000 .. 100,000') & (df.owners != '100,000 .. 200,000') & (df.owners != '200,000 .. 500,000') & (df.owners != '500,000 .. 1,000,000')].tolist():
+    for x in df.publisher[(df.binned_hours_explore == 'most_played') & (df.owners != '0 .. 20,000') & (df.owners != '20,000 .. 50,000') & (df.owners != '50,000 .. 100,000') & (df.owners != '100,000 .. 200,000') & (df.owners != '200,000 .. 500,000') & (df.owners != '500,000 .. 1,000,000')].tolist():
         for a in str(x):
             if a != ',':
                 word = word + a
@@ -63,7 +63,7 @@ def clean_steamspy(df):
 #Developer Encoding
     Developer_list = ['']
     word = ''
-    for x in df.developer[(df.binned_hours == 'most_played') & (df.owners != '0 .. 20,000') & (df.owners != '20,000 .. 50,000') & (df.owners != '50,000 .. 100,000') & (df.owners != '100,000 .. 200,000') & (df.owners != '200,000 .. 500,000') & (df.owners != '500,000 .. 1,000,000')].tolist():
+    for x in df.developer[(df.binned_hours_explore == 'most_played') & (df.owners != '0 .. 20,000') & (df.owners != '20,000 .. 50,000') & (df.owners != '50,000 .. 100,000') & (df.owners != '100,000 .. 200,000') & (df.owners != '200,000 .. 500,000') & (df.owners != '500,000 .. 1,000,000')].tolist():
         for a in str(x):
             if a != ',':
                 word = word + a
