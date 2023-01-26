@@ -16,13 +16,20 @@ III = ['Curve Digital','Ukuza','Team 17','Devolver Digital','Indie Fund','Midnig
 def clean_steamspy(df):
     #Turning minutes to hours
     df.iloc[:,[9,10,11,12]] = (df.iloc[:,[9,10,11,12]] / 60)
-    # binned target
+    #BINS FOR TARGET
     ninety = np.quantile(df['average_forever'], 0.90)
     ten = np.quantile(df['average_forever'], 0.10)
     IQR = ninety - ten
-    bins = [0,1.565,75.253,195.97,1000]
-    labels = ['rarely_played','moderately_played','heavily_played','most_played']
-    df['binned_hours'] = pd.cut(df['average_forever'], bins=bins, labels=labels)
+    target_bins = [0,1.565,75.253,195.97,1000]
+    target_labels = ['rarely_played','moderately_played','heavily_played','most_played']
+    df['binned_hours'] = pd.cut(df['average_forever'], bins = target_bins, labels = target_labels)
+
+    #BINS FOR RELEASE PRICE
+    price_bins = [0,200,400,10000]
+    price_labels = ['free_to_play','budget_games','full_price_games']
+    df['binned_release_price'] = pd.cut(df['initialprice'], bins = price_bins, labels = price_labels)
+
+
     #formatting pub and dev strings
     df.publisher = df.publisher.str.replace(' ', '_')
     df.developer = df.developer.str.replace(' ','_')
