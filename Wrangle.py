@@ -3,6 +3,8 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler
 scaler = MinMaxScaler()
 import numpy as np
+import os
+import requests
 
 #Creating list of top 10 publishers from https://learn.g2.com/video-game-publishers
 
@@ -14,6 +16,12 @@ III = ['Curve Digital','Ukuza','Team 17','Devolver Digital','Indie Fund','Midnig
 
 
 def clean_steamspy(df):
+    '''
+    This function cleans the appended csv of data pulled from steamspy.
+    Continuous variables are binned to be used in classification modeling.
+    Several publishers, developers, and genres are encoded into their own
+    features for classification modeling.
+    '''
     #Turning minutes to hours
     df.iloc[:,[9,10,11,12]] = (df.iloc[:,[9,10,11,12]] / 60)
     #BINS FOR TARGET
