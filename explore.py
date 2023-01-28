@@ -18,7 +18,7 @@ import re
 # VIZ 1
 def initial_price(train):
     sns.scatterplot(data=train, y='average_forever', x='initialprice')
-    plt.title('Initial Price vs the hours played')
+    plt.title('Initial Price and the hours played')
     plt.show
     
 # VIZ 1 statistics test
@@ -44,7 +44,7 @@ def get_chi_valve(train):
 # VIZ 3
 def publisher_visual(train):
     sns.barplot(data=train, y='average_forever', x='Publisher_Rockstar_Games')
-    plt.title('Valve developer hours played vs everyone else')
+    plt.title('Rockstar publisher hours played vs everyone else')
     plt.show
 
 # VIZ 3 statistics test
