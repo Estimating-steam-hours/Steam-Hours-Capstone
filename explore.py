@@ -18,7 +18,9 @@ import re
 # VIZ 1
 def initial_price(train):
     heavily_played = train[train.binned_hours == 'heavily_played']
-    return (heavily_played.binned_release_price.value_counts().plot(kind = 'bar'))
+    heavily_played.binned_release_price.value_counts().plot(kind = 'bar')
+    plt.title('Distribution of binned_release_price in heavily_played games')
+    plt.show
     
 # VIZ 1 statistics test
 def get_chi_initialprice(train):
