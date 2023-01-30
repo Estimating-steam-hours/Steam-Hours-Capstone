@@ -17,46 +17,45 @@ import re
 
 # VIZ 1
 def initial_price(train):
-    sns.scatterplot(data=train, y='average_forever', x='initialprice')
-    plt.title('Initial Price and the hours played')
-    plt.show
+    heavily_played = train[train.binned_hours == 'heavily_played']
+    return (heavily_played.binned_release_price.value_counts().plot(kind = 'bar'))
     
 # VIZ 1 statistics test
 def get_chi_initialprice(train):
-    observed = pd.crosstab(train.average_forever, train.initialprice)
+    observed = pd.crosstab(train.binned_hours, train.binned_release_price)
     chi2, p, degf, expected = stats.chi2_contingency(observed)
     print(f'chi^2 = {chi2:.4f}')
     print(f'p     = {p:.4f}')
     
 # VIZ 2
 def developer_visual(train):
-    sns.barplot(data=train, y='average_forever', x='Developer_Valve')
+    sns.barplot(data=train, y='binned_hours', x='Developer_Valve')
     plt.title('Valve developer hours played vs everyone else')
     plt.show
     
 # VIZ 2 statistics test
 def get_chi_valve(train):
-    observed = pd.crosstab(train.average_forever, train.Developer_Valve)
+    observed = pd.crosstab(train.binned_hours, train.Developer_Valve)
     chi2, p, degf, expected = stats.chi2_contingency(observed)
     print(f'chi^2 = {chi2:.4f}')
     print(f'p     = {p:.4f}')
     
 # VIZ 3
 def publisher_visual(train):
-    sns.barplot(data=train, y='average_forever', x='Publisher_Rockstar_Games')
+    sns.barplot(data=train, y='binned_hours', x='Publisher_Rockstar_Games')
     plt.title('Rockstar publisher hours played vs everyone else')
     plt.show
 
 # VIZ 3 statistics test
 def get_chi_publisher(train):
-    observed = pd.crosstab(train.average_forever, train.Publisher_Rockstar_Games)
+    observed = pd.crosstab(train.binned_hours, train.Publisher_Rockstar_Games)
     chi2, p, degf, expected = stats.chi2_contingency(observed)
     print(f'chi^2 = {chi2:.4f}')
     print(f'p     = {p:.4f}')
     
 # VIZ 4
 def discount_visual(train):
-    sns.barplot(data=train, y='average_forever', x='discount')
+    sns.barplot(data=train, y='binned_hours', x='discount')
     plt.title('Discount vs. Average hours')
     plt.show
     
@@ -69,12 +68,12 @@ def get_chi_discount(train):
     
 # VIZ 5
 def MMO_visual(train):
-    sns.barplot(data=train, y='average_forever', x='Genre_Massively Multiplayer')
+    sns.barplot(data=train, y='binned_hours', x='Genre_Massively Multiplayer')
     plt.title('MMO vs. Average hours')
     plt.show
     
 # VIZ 6
 def free_to_play(train):
-    sns.barplot(data=train, y='average_forever', x='Genre_Free to Play')
+    sns.barplot(data=train, y='binned_hours', x='Price: free_to_play')
     plt.title('Free vs. Average hours')
     plt.show
