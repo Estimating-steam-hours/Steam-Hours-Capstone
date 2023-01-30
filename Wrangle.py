@@ -34,7 +34,9 @@ def clean_steamspy(df):
     price_bins = [0,2000,4000,100000]
     price_labels = ['free_to_play','budget_games','full_price_games']
     df['binned_release_price'] = pd.cut(df['initialprice'], bins = price_bins, labels = price_labels)
-
+    df['free_to_play'] = df.binned_release_price == 'free_to_play'
+    df['budget_games'] = df.binned_release_price == 'budget_games'
+    df['full_price'] = df.binned_release_price == 'full_price_games'
 
     #formatting pub and dev strings
     df.publisher = df.publisher.str.replace(' ', '_')
