@@ -37,9 +37,9 @@ def isolate_target(train,validate,test):
 def scale_data(x_train,x_validate,x_test):
     scaler = MinMaxScaler()
     scaler.fit(x_train)
-    x_train = scaler.transform(x_train)
-    x_validate = scaler.transform(x_validate)
-    x_test = scaler.transform(x_test)
+    x_train = pd.DataFrame(scaler.transform(x_train), columns = x_train.columns)
+    x_validate = pd.DataFrame(scaler.transform(x_validate), columns = x_validate.columns)
+    x_test = pd.DataFrame(scaler.transform(x_test), columns = x_test.columns)
     return x_train, x_validate, x_test
 
 def initialize_models():
