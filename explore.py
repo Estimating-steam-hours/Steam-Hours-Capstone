@@ -75,6 +75,6 @@ def MMO_visual(train):
     
 # VIZ 6
 def free_to_play(train):
-    sns.barplot(data=train, y='average_forever', x='Price: free_to_play')
+    sns.barplot(data=train, y='average_forever', x='Genre_Free to Play')
     plt.title('Free vs. Average hours')
     plt.show
