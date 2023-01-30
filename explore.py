@@ -29,8 +29,15 @@ def get_chi_initialprice(train):
     
 # VIZ 2
 def developer_visual(train):
-    sns.barplot(data=train, y='binned_hours', x='Developer_Valve')
-    plt.title('Valve developer hours played vs everyone else')
+    paradox = train[train.Developer_Paradox_Development_Studio == True]
+    paradox.binned_hours.value_counts().plot(kind = 'bar')
+    plt.title('distribution of hours for paradox games')
+    plt.show
+
+def supporting_viz(train):
+    valve = train[train.Developer_Valve == True]
+    valve.binned_hours.value_counts().plot(kind = 'bar')
+    plt.title('distribution of hours for valve games')
     plt.show
     
 # VIZ 2 statistics test
@@ -42,9 +49,11 @@ def get_chi_valve(train):
     
 # VIZ 3
 def publisher_visual(train):
-    sns.barplot(data=train, y='binned_hours', x='Publisher_Rockstar_Games')
-    plt.title('Rockstar publisher hours played vs everyone else')
+    rockstar = train[train.Publisher_Rockstar_Games == True]
+    rockstar['binned_hours'].value_counts().plot(kind='bar')
+    plt.title('rockstar_dist')
     plt.show
+    
 
 # VIZ 3 statistics test
 def get_chi_publisher(train):
@@ -68,12 +77,15 @@ def get_chi_discount(train):
     
 # VIZ 5
 def MMO_visual(train):
-    sns.barplot(data=train, y='binned_hours', x='Genre_Massively Multiplayer')
+    mmo = train[train['Genre_Massively Multiplayer'] == True]
+    mmo['binned_hours'].value_counts().plot(kind='bar')
     plt.title('MMO vs. Average hours')
     plt.show
     
 # VIZ 6
 def free_to_play(train):
-    sns.barplot(data=train, y='binned_hours', x='Price: free_to_play')
-    plt.title('Free vs. Average hours')
+    free_to_play = train[train.binned_release_price == 'free_to_play']
+    free_to_play.binned_hours.value_counts().plot(kind = 'bar')
+    plt.title('free_to_play dist')
     plt.show
+    
