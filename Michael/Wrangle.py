@@ -1,7 +1,6 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler
-scaler = MinMaxScaler()
 import numpy as np
 import os
 import requests
@@ -18,13 +17,25 @@ III = ['Curve Digital','Ukuza','Team 17','Devolver Digital','Indie Fund','Midnig
 def clean_steamspy(df):
     #Turning minutes to hours
     df.iloc[:,[9,10,11,12]] = (df.iloc[:,[9,10,11,12]] / 60)
-    # binned target
+    #BINS FOR TARGET
     ninety = np.quantile(df['average_forever'], 0.90)
     ten = np.quantile(df['average_forever'], 0.10)
     IQR = ninety - ten
-    bins = [0,1.565,75.253,195.97,1000]
-    labels = ['rarely_played','moderately_played','heavily_played','most_played']
-    df['binned_hours'] = pd.cut(df['average_forever'], bins=bins, labels=labels)
+    target_bins_explore = [0,1.565,75.253,195.97,1000]
+    target_labels_explore = ['rarely_played','moderately_played','heavily_played','most_played']
+    df['binned_hours_explore'] = pd.cut(df['average_forever'], bins = target_bins_explore, labels = target_labels_explore)
+    target_bins = [0,1.565,75.253,1000]
+    target_labels = ['rarely_played', 'moderately_played', 'heavily_played']
+    df['binned_hours'] = pd.cut(df['average_forever'], bins = target_bins, labels = target_labels)
+
+
+
+    #BINS FOR RELEASE PRICE
+    price_bins = [0,2000,4000,100000]
+    price_labels = ['free_to_play','budget_games','full_price_games']
+    df['binned_release_price'] = pd.cut(df['initialprice'], bins = price_bins, labels = price_labels)
+
+
     #formatting pub and dev strings
     df.publisher = df.publisher.str.replace(' ', '_')
     df.developer = df.developer.str.replace(' ','_')
@@ -32,7 +43,7 @@ def clean_steamspy(df):
 #PUBLISHER ENCODING:
     Publisher_list = ['']
     word = ''
-    for x in df.publisher[(df.binned_hours == 'most_played') & (df.owners != '0 .. 20,000') & (df.owners != '20,000 .. 50,000') & (df.owners != '50,000 .. 100,000') & (df.owners != '100,000 .. 200,000') & (df.owners != '200,000 .. 500,000') & (df.owners != '500,000 .. 1,000,000')].tolist():
+    for x in df.publisher[(df.binned_hours_explore == 'most_played') & (df.owners != '0 .. 20,000') & (df.owners != '20,000 .. 50,000') & (df.owners != '50,000 .. 100,000') & (df.owners != '100,000 .. 200,000') & (df.owners != '200,000 .. 500,000') & (df.owners != '500,000 .. 1,000,000')].tolist():
         for a in str(x):
             if a != ',':
                 word = word + a
@@ -52,7 +63,7 @@ def clean_steamspy(df):
 #Developer Encoding
     Developer_list = ['']
     word = ''
-    for x in df.developer[(df.binned_hours == 'most_played') & (df.owners != '0 .. 20,000') & (df.owners != '20,000 .. 50,000') & (df.owners != '50,000 .. 100,000') & (df.owners != '100,000 .. 200,000') & (df.owners != '200,000 .. 500,000') & (df.owners != '500,000 .. 1,000,000')].tolist():
+    for x in df.developer[(df.binned_hours_explore == 'most_played') & (df.owners != '0 .. 20,000') & (df.owners != '20,000 .. 50,000') & (df.owners != '50,000 .. 100,000') & (df.owners != '100,000 .. 200,000') & (df.owners != '200,000 .. 500,000') & (df.owners != '500,000 .. 1,000,000')].tolist():
         for a in str(x):
             if a != ',':
                 word = word + a
@@ -94,12 +105,13 @@ def clean_steamspy(df):
 #Drops
     df = df.drop(columns = ['score_rank','userscore'])
     df = df.dropna()
+
+
     return df
 
 def scale_numeric(df):
     df.iloc[:,[6,7,8,9,10]] = scaler.fit_transform(df.iloc[:,[6,7,8,9,10]])
     return df
-    
 def my_train_test_split(df):
 
     train, test = train_test_split(df, test_size=.2, random_state=123)
@@ -107,17 +119,18 @@ def my_train_test_split(df):
 
     return train, validate, test
 
-
 def get_steamspy_all():
     '''
-    This function checks if device has required csv to run project. 
+    This function checks if device has required csv to run project.
     If not, requests data from steamspy to create csv.
     '''
     if os.path.isfile('steamspy_3000_games.csv'):
-        
+
         # If csv file exists read in data from csv file.
         df = pd.read_csv('steamspy_3000_games.csv', index_col=0)
-        
+
+        app_list = list(df.appid)
+
     else:
         #Begin pulling data from steamspy
         long_response1 = requests.get('https://steamspy.com/api.php?request=all&page=0')
@@ -137,22 +150,25 @@ def get_steamspy_all():
 
         df.to_csv('steamspy_3000_games.csv')
 
-    return df
+        app_list = list(df.appid)
 
-def get_tags_genre():
+    return df, app_list
+
+def get_tags_genre(app_list):
     '''
-    This function checks if device has required csv to run project. 
+    This function checks if device has required csv to run project.
     If not, requests data from steamspy to create csv.
     '''
     if os.path.isfile('tags_genre_3000.csv'):
-        
+
         # If csv file exists read in data from csv file.
         df = pd.read_csv('tags_genre_3000.csv', index_col=0)
-        
+
     else:
+        app_list = app_list
         tag_list = []
         genre_list = []
-        
+
         for i in app_list:
             response = requests.get(f'https://steamspy.com/api.php?request=appdetails&appid={i}')
             response_data = response.json()
@@ -162,31 +178,31 @@ def get_tags_genre():
             else:
                 tag_list.append([])
                 genre_list.append(response_data['genre'])
-            
+
         tag_series = pd.Series(tag_list, name='tags')
         genre_series = pd.Series(genre_list, name='genre')
         app_series = pd.Series(app_list, name='appid')
-        
+
         df = pd.DataFrame(app_series)
         df['tags'] = tag_series
         df['genre'] = genre_series
-        
+
         df.to_csv('tags_genre_3000.csv')
-        
+
     return df
 
-def get_appended_steamspy_data(steamspy_data, tags_genre):  
+def get_appended_steamspy_data(steamspy_data, tags_genre):
     '''
-    This function checks if device has required csv to run project. 
+    This function checks if device has required csv to run project.
     If not, requests data to create csv.
     '''
     if os.path.isfile('final_steamspy_3000_games.csv'):
-        
+
         # If csv file exists read in data from csv file.
         df = pd.read_csv('final_steamspy_3000_games.csv', index_col=0)
-        
+
     else:
-    
+
         df = steamspy_data.reset_index()
         df = steamspy_data.drop(columns='index')
 
@@ -201,10 +217,10 @@ def get_clean_steamspy_data():
     This function runs all acquire and prep function.
     Ready for train,test splitting.
     '''
-    steamspy_data = get_steamspy_all()
-    tags_genre = get_tags_genre()
+    steamspy_data, app_list = get_steamspy_all()
+    tags_genre = get_tags_genre(app_list)
     df = get_appended_steamspy_data(steamspy_data, tags_genre)
-    
+
     df = clean_steamspy(df)
-    
+
     return df
