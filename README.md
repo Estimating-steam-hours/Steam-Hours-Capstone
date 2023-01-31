@@ -11,7 +11,7 @@ The gaming industry now makes more money than the film and music industry combin
 
 ## Initial Thoughts
 
-We believe that Multiplayer games with a competitive element, such as battle royales, like Fortnite, have the highest game hours. We believe that the games with the least amount of hours are horror genre games.
+We believe that Multiplayer games with a competitive element, such as battle royales, like Fortnite, have the highest game hours. We believe that the games with that are free to play will have very low hours. We also believe that the publisher and developer of the game will matter to hours played.
 
 ## The Plan
 
@@ -52,7 +52,7 @@ We believe that Multiplayer games with a competitive element, such as battle roy
 4) Run notebook
 
 ## Takeaways and Conclusions
-* Do not use model yet as there is more work to be done in improving its ability to determine whether games will be havily played
+Do not use model yet as there is more work to be done in improving its ability to determine whether games will be havily played
 
 ## Next Steps
 
