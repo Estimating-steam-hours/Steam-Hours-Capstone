@@ -25,7 +25,7 @@ def clean_steamspy(df):
     target_labels_explore = ['rarely_played','moderately_played','heavily_played','most_played']
     df['binned_hours_explore'] = pd.cut(df['average_forever'], bins = target_bins_explore, labels = target_labels_explore)
     target_bins = [0,1.565,73.146,1000]
-    target_labels = [ 'rarely_played','moderately_played', 'high_hours']
+    target_labels = [ 'rarely_played','moderately_played', 'heavily_played']
     df['binned_hours'] = pd.cut(df['average_forever'], bins = target_bins, labels = target_labels)
 
 
@@ -82,6 +82,7 @@ def clean_steamspy(df):
         x = x.replace(' ','_')
     for x in Developer_list:
         df[f'Developer_{x}'] = df.developer.str.contains(x,regex = False)
+    df['Developer_other'] = df.developer.str not in Developer_list
 #GENRE ENCODING:
 ### FINDS UNIQUE WORDS FROM LIST OF GENRES
     genre_list = []
