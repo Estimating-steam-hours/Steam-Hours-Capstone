@@ -220,10 +220,17 @@ def get_clean_steamspy_data():
     This function runs all acquire and prep function.
     Ready for train,test splitting.
     '''
-    steamspy_data, app_list = get_steamspy_all()
-    tags_genre = get_tags_genre(app_list)
-    df = get_appended_steamspy_data(steamspy_data, tags_genre)
+    if os.path.isfile('final_steamspy_3000_games.csv'):
 
-    df = clean_steamspy(df)
+        # If csv file exists read in data from csv file.
+        df = pd.read_csv('final_steamspy_3000_games.csv', index_col=0)
+    
+    else:
+
+        steamspy_data, app_list = get_steamspy_all()
+        tags_genre = get_tags_genre(app_list)
+        df = get_appended_steamspy_data(steamspy_data, tags_genre)
+
+        df = clean_steamspy(df)
 
     return df
