@@ -224,6 +224,7 @@ def get_clean_steamspy_data():
 
         # If csv file exists read in data from csv file.
         df = pd.read_csv('final_steamspy_3000_games.csv', index_col=0)
+        df = clean_steamspy(df)
     
     else:
 
