@@ -21,10 +21,10 @@ def clean_steamspy(df):
     ninety = np.quantile(df['average_forever'], 0.90)
     ten = np.quantile(df['average_forever'], 0.10)
     IQR = ninety - ten
-    target_bins_explore = [0,1.565,73.146,195.97,1000]
+    target_bins_explore = [0,2.956,73.146,195.97,1000]
     target_labels_explore = ['rarely_played','moderately_played','heavily_played','most_played']
     df['binned_hours_explore'] = pd.cut(df['average_forever'], bins = target_bins_explore, labels = target_labels_explore)
-    target_bins = [0,1.565,73.146,1000]
+    target_bins = [0,2.956,73.146,1000]
     target_labels = [ 'rarely_played','moderately_played', 'heavily_played']
     df['binned_hours'] = pd.cut(df['average_forever'], bins = target_bins, labels = target_labels)
 
