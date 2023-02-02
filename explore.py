@@ -20,6 +20,7 @@ def initial_price(train):
     heavily_played = train[train.binned_hours == 'heavily_played']
     heavily_played.binned_release_price.value_counts().plot(kind = 'bar')
     plt.title('Distribution of binned_release_price in heavily_played games')
+    plt.xticks(rotation=0)
     plt.show
     
 # VIZ 1 statistics test
@@ -33,13 +34,15 @@ def get_chi_initialprice(train):
 def developer_visual(train):
     paradox = train[train.Developer_Paradox_Development_Studio == True]
     paradox.binned_hours.value_counts().plot(kind = 'bar')
-    plt.title('distribution of hours for paradox games')
+    plt.title('Distribution of Hours for paradox games')
+    plt.xticks(rotation=0)
     plt.show
 
 def supporting_viz(train):
     valve = train[train.Developer_Valve == True]
     valve.binned_hours.value_counts().plot(kind = 'bar')
-    plt.title('distribution of hours for valve games')
+    plt.title('Distribution of Hours for Developer Valve games')
+    plt.xticks(rotation=0)
     plt.show
     
 # VIZ 2 statistics test
@@ -53,7 +56,8 @@ def get_chi_valve(train):
 def publisher_visual(train):
     rockstar = train[train.Publisher_Rockstar_Games == True]
     rockstar['binned_hours'].value_counts().plot(kind='bar')
-    plt.title('rockstar_dist')
+    plt.title('Distribution of Rockstar Publisher')
+    plt.xticks(rotation=0)
     plt.show
     
 
@@ -68,6 +72,7 @@ def get_chi_publisher(train):
 def discount_visual(train):
     sns.barplot(data=train, y='binned_hours', x='discount')
     plt.title('Discount vs. Average hours')
+    plt.xticks(rotation=0)
     plt.show
     
 # VIZ 4 statistics test
@@ -81,13 +86,15 @@ def get_chi_discount(train):
 def MMO_visual(train):
     mmo = train[train['Genre_Massively Multiplayer'] == True]
     mmo['binned_hours'].value_counts().plot(kind='bar')
-    plt.title('MMO vs. Average hours')
+    plt.title('MMO Distribution Hours')
+    plt.xticks(rotation=0)
     plt.show
     
 # VIZ 6
 def free_to_play(train):
     free_to_play = train[train.binned_release_price == 'free_to_play']
     free_to_play.binned_hours.value_counts().plot(kind = 'bar')
-    plt.title('free_to_play dist')
+    plt.title('free_to_play Ditribution hours')
+    plt.xticks(rotation=0)
     plt.show
     
