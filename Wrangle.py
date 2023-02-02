@@ -24,8 +24,8 @@ def clean_steamspy(df):
     target_bins_explore = [0,2.956,73.146,195.97,1000]
     target_labels_explore = ['rarely_played','moderately_played','heavily_played','most_played']
     df['binned_hours_explore'] = pd.cut(df['average_forever'], bins = target_bins_explore, labels = target_labels_explore)
-    target_bins = [0,2.956,73.146,1000]
-    target_labels = [ 'rarely_played','moderately_played', 'heavily_played']
+    target_bins = [0,73.146,1000]
+    target_labels = [ 'low_hours', 'high_hours']
     df['binned_hours'] = pd.cut(df['average_forever'], bins = target_bins, labels = target_labels)
 
 
