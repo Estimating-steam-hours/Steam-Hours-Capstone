@@ -15,8 +15,10 @@ III = ['Curve Digital','Ukuza','Team 17','Devolver Digital','Indie Fund','Midnig
 
 
 def clean_steamspy(df):
+    
     #Turning minutes to hours
     df.iloc[:,[9,10,11,12]] = (df.iloc[:,[9,10,11,12]] / 60)
+    #df = df[df['average_forever']!=0]
     #BINS FOR TARGET
     ninety = np.quantile(df['average_forever'], 0.90)
     ten = np.quantile(df['average_forever'], 0.10)
@@ -28,7 +30,10 @@ def clean_steamspy(df):
     target_labels = [ 'low_hours', 'high_hours']
     df['binned_hours'] = pd.cut(df['average_forever'], bins = target_bins, labels = target_labels)
 
-
+    #Drops
+    df = df.drop(columns = ['score_rank','userscore'])
+    df = df.dropna()
+    
 
     #BINS FOR RELEASE PRICE
     price_bins = [0,2000,4000,100000]
@@ -105,9 +110,7 @@ def clean_steamspy(df):
     for x in genre_list:
         df[f'Genre_{x}'] = df.genre.str.contains(x)
 
-#Drops
-    df = df.drop(columns = ['score_rank','userscore'])
-    df = df.dropna()
+
 
 
     return df
