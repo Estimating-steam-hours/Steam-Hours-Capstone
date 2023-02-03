@@ -13,12 +13,15 @@ from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 from sklearn.naive_bayes import MultinomialNB, GaussianNB
 from sklearn.linear_model import LogisticRegression
 from sklearn.neighbors import KNeighborsClassifier
+from xgboost import XGBClassifier
+from sklearn.model_selection import cross_val_score
+from sklearn.model_selection import RepeatedStratifiedKFold
 # helper preprocessing module
 
 from sklearn.metrics import classification_report, confusion_matrix, ConfusionMatrixDisplay
 
-def prep_for_model(train, validate,test):
-    #df = df.drop(columns = ['binned_hours_explore','binned_release_price','median_2weeks','appid','name','developer','publisher','positive','negative','owners','average_forever','average_2weeks','median_forever','price','initialprice','discount','ccu','appid.1','tags','genre','Publisher_','Developer_','Genre_nan'])
+def prep_for_model(train, validate,test,df):
+    df = df.drop(columns = ['binned_hours_explore','binned_release_price','median_2weeks','appid','name','developer','publisher','positive','negative','owners','average_forever','average_2weeks','median_forever','price','initialprice','discount','ccu','appid.1','tags','genre','Publisher_','Developer_','Genre_nan'])
     train = train.drop(columns = ['binned_hours_explore','binned_release_price','median_2weeks','appid','name','developer','publisher','positive','negative','owners','average_forever','average_2weeks','median_forever','price','initialprice','discount','ccu','appid.1','tags','genre','Publisher_','Developer_','Genre_nan'])
     validate = validate.drop(columns = ['binned_hours_explore','binned_release_price','median_2weeks','appid','name','developer','publisher','positive','negative','owners','average_forever','average_2weeks','median_forever','price','initialprice','discount','ccu','appid.1','tags','genre','Publisher_','Developer_','Genre_nan'])
     test = test.drop(columns = ['binned_hours_explore','binned_release_price','median_2weeks','appid','name','developer','publisher','positive','negative','owners','average_forever','average_2weeks','median_forever','price','initialprice','discount','ccu','appid.1','tags','genre','Publisher_','Developer_','Genre_nan'])
@@ -228,5 +231,35 @@ def get_knn_test(x_train, y_train, x_test, y_test):
         'baseline': 92,
         'KNN': grid_KNN.predict(x_test)})
     print(pd.DataFrame(classification_report(y_preds_test.y_act, y_preds_test.KNN, output_dict=True)))
+    
+    return scores
+def get_xgboost(x,y,x_train,x_validate,x_test,y_train,y_validate,y_test,scores):
+    # define model
+    model = XGBClassifier()
+    # define grid
+    weights = [1, 10, 25, 50, 75, 99, 100, 1000]
+    param_grid = dict(scale_pos_weight=weights)
+    # define evaluation procedure
+    cv = RepeatedStratifiedKFold(n_splits=10, n_repeats=3, random_state=1)
+    # define grid search
+    grid = GridSearchCV(estimator=model, param_grid=param_grid, n_jobs=-1, cv=cv, scoring='precision')
+    # execute the grid search
+    grid_result = grid.fit(x,y)
+    #scores
+    train_score = grid_result.best_estimator_.score(x_train, y_train)
+    validate_score = grid_result.best_estimator_.score(x_validate, y_validate)
+    test_score = grid_result.best_estimator_.score(x_test, y_test)
+
+    scores.loc[len(scores)] = ['XGB', train_score, validate_score, train_score - validate_score]
+
+    y_preds_train = pd.DataFrame({
+        'y_act': y_train,
+        'baseline': 92,
+        'XGB': grid_result.predict(x_train)})
+    y_preds_validate = pd.DataFrame({
+        'y_act': y_validate,
+        'baseline': 92,
+        'XGB': grid_result.predict(x_validate)})
+    print(pd.DataFrame(classification_report(y_preds_validate.y_act, y_preds_validate.XGB, output_dict=True)))
     
     return scores
