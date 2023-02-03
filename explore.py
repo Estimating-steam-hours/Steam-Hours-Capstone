@@ -23,6 +23,13 @@ def initial_price(train):
     plt.xticks(rotation=0)
     plt.show
     
+# Viz 1.b
+def price_game(train):
+    train.binned_release_price.value_counts().plot(kind = 'bar')
+    plt.title('Distribution of binned_release_price')
+    plt.xticks(rotation=0)
+    plt.show
+    
 # VIZ 1 statistics test
 def get_chi_initialprice(train):
     observed = pd.crosstab(train.binned_hours_explore, train.binned_release_price)
@@ -94,7 +101,7 @@ def MMO_visual(train):
 def free_to_play(train):
     free_to_play = train[train.binned_release_price == 'free_to_play']
     free_to_play.binned_hours_explore.value_counts().plot(kind = 'bar')
-    plt.title('free_to_play Ditribution hours')
+    plt.title('free_to_play Distribution Hours')
     plt.xticks(rotation=0)
     plt.show
     
