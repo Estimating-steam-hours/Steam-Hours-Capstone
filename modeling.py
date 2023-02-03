@@ -19,13 +19,13 @@ from sklearn.model_selection import RepeatedStratifiedKFold
 # helper preprocessing module
 
 from sklearn.metrics import classification_report, confusion_matrix, ConfusionMatrixDisplay
-
+XGB_test_score = 0
 def prep_for_model(train, validate,test,df):
-    df = df.drop(columns = ['binned_hours_explore','binned_release_price','median_2weeks','appid','name','developer','publisher','positive','negative','owners','average_forever','average_2weeks','median_forever','price','initialprice','discount','ccu','appid.1','tags','genre','Publisher_','Developer_','Genre_nan'])
-    train = train.drop(columns = ['binned_hours_explore','binned_release_price','median_2weeks','appid','name','developer','publisher','positive','negative','owners','average_forever','average_2weeks','median_forever','price','initialprice','discount','ccu','appid.1','tags','genre','Publisher_','Developer_','Genre_nan'])
-    validate = validate.drop(columns = ['binned_hours_explore','binned_release_price','median_2weeks','appid','name','developer','publisher','positive','negative','owners','average_forever','average_2weeks','median_forever','price','initialprice','discount','ccu','appid.1','tags','genre','Publisher_','Developer_','Genre_nan'])
-    test = test.drop(columns = ['binned_hours_explore','binned_release_price','median_2weeks','appid','name','developer','publisher','positive','negative','owners','average_forever','average_2weeks','median_forever','price','initialprice','discount','ccu','appid.1','tags','genre','Publisher_','Developer_','Genre_nan'])
-    return train, validate, test
+    df = df.drop(columns = ['binned_hours_explore','binned_release_price','median_2weeks','appid','name','developer','publisher','positive','negative','owners','average_forever','average_2weeks','median_forever','price','initialprice','discount','ccu','appid.1','tags','genre','Publisher_','Developer_'])
+    train = train.drop(columns = ['binned_hours_explore','binned_release_price','median_2weeks','appid','name','developer','publisher','positive','negative','owners','average_forever','average_2weeks','median_forever','price','initialprice','discount','ccu','appid.1','tags','genre','Publisher_','Developer_'])
+    validate = validate.drop(columns = ['binned_hours_explore','binned_release_price','median_2weeks','appid','name','developer','publisher','positive','negative','owners','average_forever','average_2weeks','median_forever','price','initialprice','discount','ccu','appid.1','tags','genre','Publisher_','Developer_'])
+    test = test.drop(columns = ['binned_hours_explore','binned_release_price','median_2weeks','appid','name','developer','publisher','positive','negative','owners','average_forever','average_2weeks','median_forever','price','initialprice','discount','ccu','appid.1','tags','genre','Publisher_','Developer_'])
+    return train, validate, test, df
 def isolate_target(train,validate,test):
     x_train = train.drop(columns = 'binned_hours')
     y_train = train.binned_hours
@@ -36,13 +36,14 @@ def isolate_target(train,validate,test):
 
     return x_train, y_train, x_validate, y_validate, x_test, y_test
 
-def scale_data(x_train,x_validate,x_test):
+def scale_data(x_train,x_validate,x_test, df):
     scaler = MinMaxScaler()
     scaler.fit(x_train)
+    df = pd.DataFrame(scaler.transform(df), columns = df.columns)
     x_train = pd.DataFrame(scaler.transform(x_train), columns = x_train.columns)
     x_validate = pd.DataFrame(scaler.transform(x_validate), columns = x_validate.columns)
     x_test = pd.DataFrame(scaler.transform(x_test), columns = x_test.columns)
-    return x_train, x_validate, x_test
+    return x_train, x_validate, x_test, df
 
 def initialize_models():
     '''
@@ -248,7 +249,7 @@ def get_xgboost(x,y,x_train,x_validate,x_test,y_train,y_validate,y_test,scores):
     #scores
     train_score = grid_result.best_estimator_.score(x_train, y_train)
     validate_score = grid_result.best_estimator_.score(x_validate, y_validate)
-    test_score = grid_result.best_estimator_.score(x_test, y_test)
+    XGB_test_score = grid_result.best_estimator_.score(x_test, y_test)
 
     scores.loc[len(scores)] = ['XGB', train_score, validate_score, train_score - validate_score]
 
@@ -260,6 +261,11 @@ def get_xgboost(x,y,x_train,x_validate,x_test,y_train,y_validate,y_test,scores):
         'y_act': y_validate,
         'baseline': 92,
         'XGB': grid_result.predict(x_validate)})
+    y_preds_test = pd.DataFrame({
+        'y_act':y_test,
+        'baseline': 95,
+        'XGB': grid_result.predict(x_test)})
     print(pd.DataFrame(classification_report(y_preds_validate.y_act, y_preds_validate.XGB, output_dict=True)))
-    
-    return scores
+    test_report = pd.DataFrame(classification_report(y_preds_test.y_act, y_preds_test.XGB, output_dict=True))
+    return scores, XGB_test_score, test_report
+#def get_xgboost_test(x,y,x_train,x_validate,x_test,y_train,y_validate,y_test):

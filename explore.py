@@ -17,7 +17,7 @@ import re
 
 # VIZ 1
 def initial_price(train):
-    heavily_played = train[train.binned_hours == 'heavily_played']
+    heavily_played = train[train.binned_hours_explore == 'high_hours']
     heavily_played.binned_release_price.value_counts().plot(kind = 'bar')
     plt.title('Distribution of binned_release_price in heavily_played games')
     plt.xticks(rotation=0)
@@ -25,7 +25,7 @@ def initial_price(train):
     
 # VIZ 1 statistics test
 def get_chi_initialprice(train):
-    observed = pd.crosstab(train.binned_hours, train.binned_release_price)
+    observed = pd.crosstab(train.binned_hours_explore, train.binned_release_price)
     chi2, p, degf, expected = stats.chi2_contingency(observed)
     print(f'chi^2 = {chi2:.4f}')
     print(f'p     = {p:.4f}')
@@ -33,21 +33,21 @@ def get_chi_initialprice(train):
 # VIZ 2
 def developer_visual(train):
     paradox = train[train.Developer_Paradox_Development_Studio == True]
-    paradox.binned_hours.value_counts().plot(kind = 'bar')
+    paradox.binned_hours_explore.value_counts().plot(kind = 'bar')
     plt.title('Distribution of Hours for paradox games')
     plt.xticks(rotation=0)
     plt.show
 
 def supporting_viz(train):
     valve = train[train.Developer_Valve == True]
-    valve.binned_hours.value_counts().plot(kind = 'bar')
+    valve.binned_hours_explore.value_counts().plot(kind = 'bar')
     plt.title('Distribution of Hours for Developer Valve games')
     plt.xticks(rotation=0)
     plt.show
     
 # VIZ 2 statistics test
 def get_chi_valve(train):
-    observed = pd.crosstab(train.binned_hours, train.Developer_Valve)
+    observed = pd.crosstab(train.binned_hours_explore, train.Developer_Valve)
     chi2, p, degf, expected = stats.chi2_contingency(observed)
     print(f'chi^2 = {chi2:.4f}')
     print(f'p     = {p:.4f}')
@@ -55,7 +55,7 @@ def get_chi_valve(train):
 # VIZ 3
 def publisher_visual(train):
     rockstar = train[train.Publisher_Rockstar_Games == True]
-    rockstar['binned_hours'].value_counts().plot(kind='bar')
+    rockstar['binned_hours_explore'].value_counts().plot(kind='bar')
     plt.title('Distribution of Rockstar Publisher')
     plt.xticks(rotation=0)
     plt.show
@@ -63,14 +63,14 @@ def publisher_visual(train):
 
 # VIZ 3 statistics test
 def get_chi_publisher(train):
-    observed = pd.crosstab(train.binned_hours, train.Publisher_Rockstar_Games)
+    observed = pd.crosstab(train.binned_hours_explore, train.Publisher_Rockstar_Games)
     chi2, p, degf, expected = stats.chi2_contingency(observed)
     print(f'chi^2 = {chi2:.4f}')
     print(f'p     = {p:.4f}')
     
 # VIZ 4
 def discount_visual(train):
-    sns.barplot(data=train, y='binned_hours', x='discount')
+    sns.barplot(data=train, y='binned_hours_explore', x='discount')
     plt.title('Discount vs. Average hours')
     plt.xticks(rotation=0)
     plt.show
@@ -85,7 +85,7 @@ def get_chi_discount(train):
 # VIZ 5
 def MMO_visual(train):
     mmo = train[train['Genre_Massively Multiplayer'] == True]
-    mmo['binned_hours'].value_counts().plot(kind='bar')
+    mmo['binned_hours_explore'].value_counts().plot(kind='bar')
     plt.title('MMO Distribution Hours')
     plt.xticks(rotation=0)
     plt.show
@@ -93,7 +93,7 @@ def MMO_visual(train):
 # VIZ 6
 def free_to_play(train):
     free_to_play = train[train.binned_release_price == 'free_to_play']
-    free_to_play.binned_hours.value_counts().plot(kind = 'bar')
+    free_to_play.binned_hours_explore.value_counts().plot(kind = 'bar')
     plt.title('free_to_play Ditribution hours')
     plt.xticks(rotation=0)
     plt.show

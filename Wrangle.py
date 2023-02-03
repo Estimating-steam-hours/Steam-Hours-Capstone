@@ -23,11 +23,11 @@ def clean_steamspy(df):
     ninety = np.quantile(df['average_forever'], 0.90)
     ten = np.quantile(df['average_forever'], 0.10)
     IQR = ninety - ten
-    target_bins_explore = [0,2.956,73.146,195.97,1000]
-    target_labels_explore = ['rarely_played','moderately_played','heavily_played','most_played']
+    target_bins_explore = [0,73.146,1000]
+    target_labels_explore = ['low_hours','high_hours']
     df['binned_hours_explore'] = pd.cut(df['average_forever'], bins = target_bins_explore, labels = target_labels_explore)
     target_bins = [0,73.146,1000]
-    target_labels = [ 'low_hours', 'high_hours']
+    target_labels = [ 0, 1]
     df['binned_hours'] = pd.cut(df['average_forever'], bins = target_bins, labels = target_labels)
 
     #Drops
@@ -50,7 +50,7 @@ def clean_steamspy(df):
 #PUBLISHER ENCODING:
     Publisher_list = ['']
     word = ''
-    for x in df.publisher[(df.binned_hours_explore == 'most_played') & (df.owners != '0 .. 20,000') & (df.owners != '20,000 .. 50,000') & (df.owners != '50,000 .. 100,000') & (df.owners != '100,000 .. 200,000') & (df.owners != '200,000 .. 500,000') & (df.owners != '500,000 .. 1,000,000')].tolist():
+    for x in df.publisher[(df.binned_hours_explore == 'high_hours') & (df.owners != '0 .. 20,000') & (df.owners != '20,000 .. 50,000') & (df.owners != '50,000 .. 100,000') & (df.owners != '100,000 .. 200,000') & (df.owners != '200,000 .. 500,000') & (df.owners != '500,000 .. 1,000,000')].tolist():
         for a in str(x):
             if a != ',':
                 word = word + a
@@ -70,7 +70,7 @@ def clean_steamspy(df):
 #Developer Encoding
     Developer_list = ['']
     word = ''
-    for x in df.developer[(df.binned_hours_explore == 'most_played') & (df.owners != '0 .. 20,000') & (df.owners != '20,000 .. 50,000') & (df.owners != '50,000 .. 100,000') & (df.owners != '100,000 .. 200,000') & (df.owners != '200,000 .. 500,000') & (df.owners != '500,000 .. 1,000,000')].tolist():
+    for x in df.developer[(df.binned_hours_explore == 'high_hours') & (df.owners != '0 .. 20,000') & (df.owners != '20,000 .. 50,000') & (df.owners != '50,000 .. 100,000') & (df.owners != '100,000 .. 200,000') & (df.owners != '200,000 .. 500,000') & (df.owners != '500,000 .. 1,000,000')].tolist():
         for a in str(x):
             if a != ',':
                 word = word + a
