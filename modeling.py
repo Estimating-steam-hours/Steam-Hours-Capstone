@@ -13,7 +13,6 @@ from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 from sklearn.naive_bayes import MultinomialNB, GaussianNB
 from sklearn.linear_model import LogisticRegression
 from sklearn.neighbors import KNeighborsClassifier
-import xgboost as xgb
 # helper preprocessing module
 
 from sklearn.metrics import classification_report, confusion_matrix, ConfusionMatrixDisplay
