@@ -19,15 +19,17 @@ import re
 def initial_price(train):
     heavily_played = train[train.binned_hours_explore == 'high_hours']
     heavily_played.binned_release_price.value_counts().plot(kind = 'bar')
-    plt.title('Distribution of binned_release_price in heavily_played games')
-    plt.xticks(rotation=0)
+    plt.xlabel('Price of Game')
+    plt.ylabel('Number of Games')
+    plt.xticks(np.arange(3), ['Free to Play', 'Budgeted', 'Full Price'], rotation=0)
     plt.show
     
 # Viz 1.b
 def price_game(train):
     train.binned_release_price.value_counts().plot(kind = 'bar')
-    plt.title('Distribution of binned_release_price')
-    plt.xticks(rotation=0)
+    plt.xlabel('Price of Game')
+    plt.ylabel('Number of Games')
+    plt.xticks(np.arange(3), ['Free to Play', 'Budgeted', 'Full Price'], rotation=0)
     plt.show
     
 # VIZ 1 statistics test
@@ -48,8 +50,9 @@ def developer_visual(train):
 def supporting_viz(train):
     valve = train[train.Developer_Valve == True]
     valve.binned_hours_explore.value_counts().plot(kind = 'bar')
-    plt.title('Distribution of Hours for Developer Valve games')
-    plt.xticks(rotation=0)
+    plt.xlabel('Hours Played')
+    plt.ylabel('Number of Games')
+    plt.xticks(np.arange(2), ['Low Hours', 'High Hours'], rotation=0)
     plt.show
     
 # VIZ 2 statistics test
@@ -93,8 +96,9 @@ def get_chi_discount(train):
 def MMO_visual(train):
     mmo = train[train['Genre_Massively Multiplayer'] == True]
     mmo['binned_hours_explore'].value_counts().plot(kind='bar')
-    plt.title('MMO Distribution Hours')
-    plt.xticks(rotation=0)
+    plt.xlabel('MMO hours played')
+    plt.ylabel('Number of Games')
+    plt.xticks(np.arange(2), ['Low Hours', 'High Hours'], rotation=0)
     plt.show
     
 # VIZ 6
