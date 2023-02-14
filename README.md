@@ -1,4 +1,8 @@
 # Steam Hours Capstone Project
+
+## Canva Presentation:
+https://www.canva.com/design/DAFZcLy_2-M/cnvY68Cxvus5wu6I25bPvA/view?utm_content=DAFZcLy_2-M&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton
+
 ## Project Description
 
 The gaming industry now makes more money than the film and music industry combined. We have decided to look into what makes a customer play games for large amounts of time. We will look into what features if any contribute to the number of gameplay hours and create a machine learning model to estimate the hours played for certain types of games. With the model we will be able to predict the value of a game based on hours played.
