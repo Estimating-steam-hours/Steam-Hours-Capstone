@@ -1,8 +1,4 @@
 # Steam Hours Capstone Project
-
-## Canva Presentation:
-https://www.canva.com/design/DAFZcLy_2-M/cnvY68Cxvus5wu6I25bPvA/view?utm_content=DAFZcLy_2-M&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton
-
 ## Project Description
 
 The gaming industry now makes more money than the film and music industry combined. We have decided to look into what makes a customer play games for large amounts of time. We will look into what features if any contribute to the number of gameplay hours and create a machine learning model to estimate the hours played for certain types of games. With the model we will be able to predict the value of a game based on hours played.
@@ -56,7 +52,7 @@ We believe that Multiplayer games with a competitive element, such as battle roy
 4) Run notebook
 
 ## Takeaways and Conclusions
-Do not use model yet as there is more work to be done in improving its ability to determine whether games will be havily played
+Through our exploration we were able to find that a games publisher, developer, genre, and release price are all useful in predicting whether or not a game will fall under 'high hour' games. We were also able to create a model that predicts which hour bin a game will fall under with 96% accuracy and a precision of 88% on high hour games which is our targeted class.
 
 ## Next Steps
 
